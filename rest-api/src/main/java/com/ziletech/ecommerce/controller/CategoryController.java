@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/ecommerce/api/v1/categories")
@@ -38,8 +39,37 @@ public class CategoryController {
                     new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND
             );
         }
+    }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<MessageDTO> delete(@PathVariable("id") Long id) {
+        try {
+            categoryService.delete(id);
+            return new ResponseEntity<>(
+                    new MessageDTO("category is deleted"), HttpStatus.OK
+            );
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(
+                    new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND
+            );
+        }
+    }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<CategoryDTO>> findAll(){
+        return new ResponseEntity<>(categoryService.findAll(),HttpStatus.OK);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<Object> getCategoryById(@PathVariable Long id){
+        try {
+           CategoryDTO category= categoryService.findById(id);
+            return new ResponseEntity<>(category, HttpStatus.FOUND);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(
+                    new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND
+            );
+        }
     }
 
 }
