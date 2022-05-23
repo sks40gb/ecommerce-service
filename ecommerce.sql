@@ -47,25 +47,15 @@ CREATE TABLE `product` (
   CONSTRAINT `FK__product__sub_category` FOREIGN KEY (`sub_category_id`) REFERENCES `sub_category` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `product_color` (
+CREATE TABLE `product_details` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` enum('Red','Blue','Green','Orange','White','Black','Yellow','Purple') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `product_id` int NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `type` enum('COLOR','SIZE') NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK__product_color__PRODUCT` (`product_id`),
-  CONSTRAINT `FK__product_color__PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE
+  KEY `FK__product_details__product` (`product_id`),
+  CONSTRAINT `FK__product_details__product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-CREATE TABLE `product_size` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` enum('XS','S','M','L','XL','XXL') NOT NULL,
-  `product_id` int NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK__product_size__product` (`product_id`),
-  CONSTRAINT `FK__product_size__product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
 
 
 
