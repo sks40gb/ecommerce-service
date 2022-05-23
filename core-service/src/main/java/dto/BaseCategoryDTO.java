@@ -9,9 +9,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ProductDetailDTO {
+public class BaseCategoryDTO {
     private Long id;
     private String name;
-    private String type;
-    private ProductDTO product;
+    private Boolean isEnable;
 }

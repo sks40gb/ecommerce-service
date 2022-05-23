@@ -11,9 +11,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SubCategoryDTO {
-    private Long id;
-    private String name;
-    private Boolean isEnable;
+public class SubCategoryDTO extends BaseCategoryDTO{
+
     private CategoryDTO categoryDTO;
+
 }

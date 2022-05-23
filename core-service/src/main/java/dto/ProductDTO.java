@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ProductDTO{
-    private Integer id;
+    private Long id;
     private String name;
     private String code;
     private String shortDesc;

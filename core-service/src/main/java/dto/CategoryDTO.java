@@ -12,9 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CategoryDTO{
-    private Long id;
-    private String name;
-    private Boolean isEnable;
+public class CategoryDTO extends BaseCategoryDTO {
+
     private List<SubCategoryDTO> subCategoryList;
+
 }
