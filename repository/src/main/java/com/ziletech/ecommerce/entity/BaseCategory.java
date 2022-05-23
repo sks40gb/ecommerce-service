@@ -1,8 +1,13 @@
 package com.ziletech.ecommerce.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @MappedSuperclass
+@Setter
+@Getter
 public class BaseCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
