@@ -20,7 +20,7 @@ public class SubCategory extends BaseCategory {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     Category category;
 
-    @OneToMany(mappedBy = "subCategory",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "subCategory")
     private List<Product> products;
 
 
