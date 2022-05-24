@@ -24,7 +24,7 @@ public class ProductController {
             ProductDTO product = productService.save(productDTO);
             return new ResponseEntity<>(product, HttpStatus.CREATED);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.CREATED);
+            return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -63,7 +63,7 @@ public class ProductController {
         return new ResponseEntity<>(productService.findAll(),HttpStatus.OK);
     }
 
-    @GetMapping("find-by-name/{name}")
+    @GetMapping("name/{name}")
     public ResponseEntity<List<ProductDTO>> findByName(@PathVariable("name") String name){
         return new ResponseEntity<>(productService.findByProductName(name),HttpStatus.OK);
     }
