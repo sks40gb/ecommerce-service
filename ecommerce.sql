@@ -57,5 +57,8 @@ CREATE TABLE `product_details` (
   CONSTRAINT `FK__product_details__product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--24 may 2022 @Nagendra
+ALTER TABLE `product`     CHANGE `name` `name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,     CHANGE `short_desc` `short_desc` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,     CHANGE `long_desc` `long_desc` VARCHAR(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL ;
+
 
 

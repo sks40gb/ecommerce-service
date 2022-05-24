@@ -17,16 +17,25 @@ public class BaseCategoryDTO {
     private Boolean isEnable;
 
     public void copyFromEntity(BaseCategory category){
-        this.setId(category.getId());
-        this.setName(category.getName());
-        this.setIsEnable(category.getIsEnable());
+        setId(category.getId());
+        setName(category.getName());
+        setIsEnable(category.getIsEnable());
     }
     public void copyToEntity(BaseCategory category){
         if(this.getId()!=null){
-            category.setId(this.getId());
+            category.setId(getId());
         }
-        category.setName(this.getName());
-        category.setIsEnable(this.getIsEnable());
+        category.setName(getName());
+        category.setIsEnable(getIsEnable());
 
+    }
+
+    @Override
+    public String toString() {
+        return "BaseCategoryDTO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", isEnable=" + isEnable +
+                '}';
     }
 }

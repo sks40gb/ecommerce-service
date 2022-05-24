@@ -1,5 +1,6 @@
 package com.ziletech.ecommerce.service;
 
+import com.ziletech.ecommerce.entity.Category;
 import dto.CategoryDTO;
 
 import java.util.List;
@@ -14,4 +15,5 @@ public interface CategoryService {
     CategoryDTO findById(Long id);
 
     List<CategoryDTO> findAll();
+
 }

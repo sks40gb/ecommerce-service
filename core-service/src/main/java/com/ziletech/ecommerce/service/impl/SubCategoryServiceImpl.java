@@ -1,11 +1,14 @@
 package com.ziletech.ecommerce.service.impl;
 
 import com.ziletech.ecommerce.entity.Category;
+import com.ziletech.ecommerce.entity.Product;
 import com.ziletech.ecommerce.entity.SubCategory;
 import com.ziletech.ecommerce.repository.CategoryRepository;
 import com.ziletech.ecommerce.repository.SubCategoryRepository;
+import com.ziletech.ecommerce.service.CategoryService;
 import com.ziletech.ecommerce.service.SubCategoryService;
 import dto.CategoryDTO;
+import dto.ProductDTO;
 import dto.SubCategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,15 +48,13 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 
     @Override
     public void delete(Long id) {
-        SubCategory subCategory = getSubCategory(id);
-        subCategoryRepository.delete(subCategory);
+        subCategoryRepository.delete(getSubCategory(id));
 
     }
 
     @Override
     public SubCategoryDTO findById(Long id) {
-        SubCategory subCategory = getSubCategory(id);
-        return getSubCategoryDTO(subCategory);
+        return getSubCategoryDTO(getSubCategory(id));
     }
 
     @Override
@@ -72,28 +73,33 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.copyFromEntity(subCategory.getCategory());
         subCategoryDTO.setCategory(categoryDTO);
+        if (subCategory.getProducts() != null) {
+            List<ProductDTO> productList = new ArrayList<>();
+            for (Product product : subCategory.getProducts()) {
+                ProductDTO productDTO = new ProductDTO();
+                productDTO.copyFromEntity(product);
+                productList.add(productDTO);
+            }
+            subCategoryDTO.setProducts(productList);
+        }
         return subCategoryDTO;
     }
 
     private SubCategory getSubCategory(Long id) {
-        SubCategory subCategory = subCategoryRepository.findById(
-                id).orElse(null);
-        if (subCategory == null) {
-            throw new EntityNotFoundException(
-                    "sub-category not found for given id " + id);
-        }
-        return subCategory;
+        return subCategoryRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(
+                        "sub-category not found for given id " + id)
+        );
     }
 
-    private Category getCategory(Long categoryId) {
+    private Category getCategory(Long id) {
         Category category = categoryRepository.findById(
-                categoryId).orElse(null);
+                id).orElse(null);
         if (category == null) {
             throw new EntityNotFoundException(
-                    "category not found for given id " + categoryId);
+                    "category not found for given id " + id);
         }
         return category;
     }
-
 
 }

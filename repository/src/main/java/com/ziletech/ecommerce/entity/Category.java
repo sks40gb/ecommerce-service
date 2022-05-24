@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 public class Category extends BaseCategory {
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
     private List<SubCategory> subCategoryList;
 
 }

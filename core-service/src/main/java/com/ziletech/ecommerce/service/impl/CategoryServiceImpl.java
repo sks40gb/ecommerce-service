@@ -37,15 +37,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(Long id) {
-        Category category = getCategory(id);
-        categoryRepository.delete(category);
+        categoryRepository.delete(getCategory(id));
 
     }
 
     @Override
     public CategoryDTO findById(Long id) {
-        Category category =  getCategory(id);
-        return getCategoryDTO(category);
+        return getCategoryDTO(getCategory(id));
     }
 
     @Override
