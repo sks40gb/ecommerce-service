@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,7 +25,8 @@ public class ProductDTO {
     private Double mrp;
     private Boolean isEnable;
     private SubCategoryDTO subCategory;
-    List<ProductDetailDTO> productDetails;
+    private Set<String> colors;
+    private Set<String> sizes;
 
     public void copyFromEntity(Product product) {
         setId(product.getId());

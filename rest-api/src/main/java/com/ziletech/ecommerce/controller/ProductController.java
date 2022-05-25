@@ -69,10 +69,22 @@ public class ProductController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Object> getCategoryById(@PathVariable Long id){
+    public ResponseEntity<Object> getProductById(@PathVariable Long id){
         try {
             ProductDTO product= productService.findById(id);
             return new ResponseEntity<>(product, HttpStatus.FOUND);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(
+                    new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND
+            );
+        }
+    }
+
+    @GetMapping("subcategory/{id}")
+    public ResponseEntity<Object> findProductsBySubCategoryId(@PathVariable Long id){
+        try {
+            List<ProductDTO> products= productService.findProductsByCategoryId(id);
+            return new ResponseEntity<>(products, HttpStatus.FOUND);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(
                     new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND

@@ -18,4 +18,6 @@ public interface ProductService {
 
     List<ProductDTO> findAll();
 
+    List<ProductDTO> findProductsByCategoryId(Long id);
+
 }

@@ -73,15 +73,6 @@ public class SubCategoryServiceImpl implements SubCategoryService {
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.copyFromEntity(subCategory.getCategory());
         subCategoryDTO.setCategory(categoryDTO);
-        if (subCategory.getProducts() != null) {
-            List<ProductDTO> productList = new ArrayList<>();
-            for (Product product : subCategory.getProducts()) {
-                ProductDTO productDTO = new ProductDTO();
-                productDTO.copyFromEntity(product);
-                productList.add(productDTO);
-            }
-            subCategoryDTO.setProducts(productList);
-        }
         return subCategoryDTO;
     }
 

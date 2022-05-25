@@ -1,22 +1,20 @@
 package com.ziletech.ecommerce.service.impl;
 
-import com.ziletech.ecommerce.entity.Category;
 import com.ziletech.ecommerce.entity.Product;
+import com.ziletech.ecommerce.entity.ProductDetail;
 import com.ziletech.ecommerce.entity.SubCategory;
+import com.ziletech.ecommerce.repository.ProductDetailRepository;
 import com.ziletech.ecommerce.repository.ProductRepository;
 import com.ziletech.ecommerce.repository.SubCategoryRepository;
-import com.ziletech.ecommerce.service.CategoryService;
 import com.ziletech.ecommerce.service.ProductService;
-import com.ziletech.ecommerce.service.SubCategoryService;
-import dto.CategoryDTO;
 import dto.ProductDTO;
 import dto.SubCategoryDTO;
+import dto.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -27,6 +25,9 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     SubCategoryRepository subCategoryRepository;
 
+    @Autowired
+    ProductDetailRepository productDetailRepository;
+
     @Override
     public ProductDTO save(ProductDTO productDTO) {
         Product product = new Product();
@@ -36,9 +37,44 @@ public class ProductServiceImpl implements ProductService {
         );
         productDTO.copyToEntity(product);
         product.setSubCategory(subCategory);
-        productRepository.save(product);
+        productRepository.saveAndFlush(product);
+        //save product details
+        saveProductDetails(productDTO, product);
         return getProductDTO(product);
     }
+
+    private void saveProductDetails(ProductDTO productDTO, Product product) {
+        List<ProductDetail> productDetailSet = new LinkedList<>();
+        if (productDTO.getSizes() != null && productDTO.getSizes().size() > 0) {
+            setProductDetailsList(product, Type.SIZE.name(),
+                    productDTO.getSizes(),
+                    productDetailSet);
+        }
+        if (productDTO.getColors() != null && productDTO.getColors().size() > 0) {
+            setProductDetailsList(product, Type.COLOR.name(),
+                    productDTO.getColors(),
+                    productDetailSet);
+        }
+        if (productDetailSet.size() > 0) {
+            productDetailRepository.saveAllAndFlush(productDetailSet);
+            product.setProductDetails(productDetailSet);
+        }
+    }
+
+    private void setProductDetailsList(Product product,
+                                       String type,
+                                       Set<String> detailsList,
+                                       List<ProductDetail> productDetailsList) {
+
+        for (String sizeName : detailsList) {
+            ProductDetail productDetail = new ProductDetail();
+            productDetail.setType(type);
+            productDetail.setName(sizeName);
+            productDetail.setProduct(product);
+            productDetailsList.add(productDetail);
+        }
+    }
+
 
     @Override
     public void update(ProductDTO productDTO) {
@@ -65,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> findByProductName(String name) {
         List<ProductDTO> productList = new ArrayList<>();
-        for(Product product:productRepository.findByNameContaining(name)){
+        for (Product product : productRepository.findByNameContaining(name)) {
             productList.add(getProductDTO(product));
         }
         return productList;
@@ -74,11 +110,22 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> findAll() {
         List<ProductDTO> productList = new ArrayList<>();
-        for(Product product:productRepository.findAll()){
+        for (Product product : productRepository.findAll()) {
             productList.add(getProductDTO(product));
         }
         return productList;
     }
+
+    public List<ProductDTO> findProductsByCategoryId(Long categoryId) {
+        List<ProductDTO> productList = new ArrayList<>();
+        for (Product product : productRepository.findBySubCategoryId(categoryId)) {
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.copyFromEntity(product);
+            productList.add(productDTO);
+        }
+        return productList;
+    }
+
 
     private ProductDTO getProductDTO(Product product) {
         ProductDTO productDTO = new ProductDTO();
@@ -86,6 +133,22 @@ public class ProductServiceImpl implements ProductService {
         SubCategoryDTO subCategoryDTO = new SubCategoryDTO();
         subCategoryDTO.copyFromEntity(product.getSubCategory());
         productDTO.setSubCategory(subCategoryDTO);
+
+        Set<String> colors = new HashSet<>();
+        Set<String> sizes = new HashSet<>();
+        if (product.getProductDetails() != null) {
+            for (ProductDetail productDetail : product.getProductDetails()) {
+                if (productDetail.getType().equals(Type.COLOR.name())) {
+                    colors.add(productDetail.getName());
+                }
+                if (productDetail.getType().equals(Type.SIZE.name())) {
+                    sizes.add(productDetail.getName());
+                }
+            }
+        }
+
+        productDTO.setColors(colors);
+        productDTO.setSizes(sizes);
         return productDTO;
     }
 
@@ -99,7 +162,6 @@ public class ProductServiceImpl implements ProductService {
         }
         return subCategory;
     }
-
 
 
     private Product getProduct(Long id) {
