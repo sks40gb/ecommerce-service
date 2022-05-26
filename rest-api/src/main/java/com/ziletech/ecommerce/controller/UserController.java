@@ -39,7 +39,7 @@ public class UserController {
             UserDTO user = userService.findByName(name);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -52,13 +52,13 @@ public class UserController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable("id") long id, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody UserDTO userDTO) {
         userDTO.setId(id);
         try {
             userService.update(userDTO);
             return new ResponseEntity<>("User is updated", HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
 
     }
