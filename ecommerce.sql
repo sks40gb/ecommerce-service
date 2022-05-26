@@ -57,6 +57,41 @@ CREATE TABLE `product_details` (
   CONSTRAINT `FK__product_details__product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- 23 May 2022 @Sujeet
+
+ DROP TABLE user;
+
+ CREATE TABLE `user` (
+   `id` int NOT NULL AUTO_INCREMENT,
+   `first_name` varchar(50) NOT NULL,
+   `last_name` varchar(50) DEFAULT NULL,
+   `email` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'abc@gmail.com',
+   `contact_number` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '9876543210',
+   `password` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+   PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE `role` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `role` varchar(30) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `address` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `apartment` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `street` varchar(50) NOT NULL,
+  `city` varchar(50) NOT NULL,
+  `state` varchar(50) NOT NULL,
+  `pin_code` int NOT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_address` (`user_id`),
+  CONSTRAINT `FK_address` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 --24 may 2022 @Nagendra
 ALTER TABLE `product`     CHANGE `name` `name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,     CHANGE `short_desc` `short_desc` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,     CHANGE `long_desc` `long_desc` VARCHAR(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL ;
 
