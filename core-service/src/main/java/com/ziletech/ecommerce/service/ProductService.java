@@ -20,4 +20,5 @@ public interface ProductService {
 
     List<ProductDTO> findProductsByCategoryId(Long id);
 
+    ProductDTO findProductsByCode(String code);
 }

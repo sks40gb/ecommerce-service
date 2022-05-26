@@ -92,5 +92,17 @@ public class ProductController {
         }
     }
 
+    @GetMapping("code/{code}")
+    public ResponseEntity<Object> findProductsBySubCategoryId(@PathVariable("code") String code){
+        try {
+           ProductDTO product= productService.findProductsByCode(code);
+            return new ResponseEntity<>(product, HttpStatus.FOUND);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(
+                    new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND
+            );
+        }
+    }
+
 
 }

@@ -31,6 +31,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO save(ProductDTO productDTO) {
         Product product = new Product();
+        //check product code if already exist
+        Product existingProduct = getProductByCode(productDTO.getCode());
+        if (existingProduct != null) {
+            throw new EntityNotFoundException("product already exist with given code " + productDTO.getCode());
+        }
         //get category from  given category id
         SubCategory subCategory = getSubCategory(
                 productDTO.getSubCategory().getId()
@@ -79,6 +84,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void update(ProductDTO productDTO) {
         Product product = getProduct(productDTO.getId());
+        if(!productDTO.getCode().equals(product.getCode())){
+            Product existingProduct = getProductByCode(productDTO.getCode());
+            if (existingProduct != null) {
+                throw new EntityNotFoundException("product already exist with given code " + productDTO.getCode());
+            }
+        }
         //get category from  given category id
         SubCategory subCategory = getSubCategory(
                 productDTO.getSubCategory().getId()
@@ -124,6 +135,19 @@ public class ProductServiceImpl implements ProductService {
             productList.add(productDTO);
         }
         return productList;
+    }
+
+    @Override
+    public ProductDTO findProductsByCode(String code) {
+      Product product = getProductByCode(code);
+        if (product == null) {
+            throw new EntityNotFoundException("Product is not found for given code " + code);
+        }
+        return getProductDTO(product);
+    }
+
+    private Product getProductByCode(String code) {
+        return productRepository.findByCode(code);
     }
 
 
