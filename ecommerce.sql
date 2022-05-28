@@ -98,3 +98,18 @@ ALTER TABLE `product`     CHANGE `name` `name` VARCHAR(100) CHARACTER SET utf8mb
 --26 may 2022 @Nagendra
 ALTER TABLE product ADD UNIQUE (`code`) ;
 
+-- 28 may 2022 @sujeet
+
+Create Table
+
+CREATE TABLE `user_role` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `role_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK__user_role__user` (`user_id`),
+  KEY `FK__user_role__role` (`role_id`),
+  CONSTRAINT `FK__user_role__role` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`),
+  CONSTRAINT `FK__user_role__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
