@@ -6,13 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    List<Product> findByNameContaining(@Param("name") String name);
+    List<Product> findByNameContainingAndIsEnable(@Param("name") String name,@Param("is_enable") boolean status);
 
-    List<Product> findBySubCategoryId(Long subCategoryId);
+    List<Product> findBySubCategoryIdAndIsEnable(Long subCategoryId,@Param("is_enable") boolean status);
 
-    Product findByCode(@Param("code") String code);
+    Product findByCodeAndIsEnable(@Param("code") String code,@Param("is_enable") boolean status);
 
     @Query(value = "SELECT\n" +
             "  p.*\n" +
@@ -22,9 +23,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "  LEFT JOIN category c\n" +
             "    ON c.id = sc.category_id\n" +
             " WHERE CONCAT(p.name,' ',p.short_desc,' ',p.long_desc,sc.name,sc.name) LIKE %:name%\n" +
-            "    AND p.unit_price>= :min AND p.unit_price <= :max "
+            "    AND (:min is null or p.unit_price>= :min)  AND (:max is null or p.unit_price <= :max) AND p.is_enable = true"
 
     ,nativeQuery = true)
     List<Product> search(@Param("name")String productName, @Param("min")Integer min,
                          @Param("max")Integer max);
+
+    List<Product> findByIsEnable(@Param("is_enable") boolean status);
+
+    Product findByIdAndIsEnable(Long id, @Param("is_enable") boolean status);
 }

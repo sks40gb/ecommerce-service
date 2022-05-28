@@ -98,3 +98,6 @@ ALTER TABLE `product`     CHANGE `name` `name` VARCHAR(100) CHARACTER SET utf8mb
 --26 may 2022 @Nagendra
 ALTER TABLE product ADD UNIQUE (`code`) ;
 
+--28 May 2022 @Nagendra
+ALTER TABLE `product`     ADD COLUMN `quantity` INT(11) NOT NULL AFTER `unit_price`;
+

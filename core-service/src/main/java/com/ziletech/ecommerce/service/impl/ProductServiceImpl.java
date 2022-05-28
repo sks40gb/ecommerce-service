@@ -84,7 +84,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void update(ProductDTO productDTO) {
         Product product = getProduct(productDTO.getId());
-        if(!productDTO.getCode().equals(product.getCode())){
+        if (!productDTO.getCode().equals(product.getCode())) {
             Product existingProduct = getProductByCode(productDTO.getCode());
             if (existingProduct != null) {
                 throw new EntityNotFoundException("product already exist with given code " + productDTO.getCode());
@@ -101,7 +101,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void delete(Long id) {
-        productRepository.delete(getProduct(id));
+        Product product = getProduct(id);
+        product.setIsEnable(false);
+        productRepository.save(product);
     }
 
     @Override
@@ -112,7 +114,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> findByProductName(String name) {
         List<ProductDTO> productList = new ArrayList<>();
-        for (Product product : productRepository.findByNameContaining(name)) {
+        for (Product product : productRepository.findByNameContainingAndIsEnable(name, true)) {
             productList.add(getProductDTO(product));
         }
         return productList;
@@ -121,15 +123,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDTO> search(String name, Integer min, Integer max) {
         List<ProductDTO> productList = new ArrayList<>();
-        for (Product product : productRepository.search(name,min,max)) {
+        for (Product product : productRepository.search(name, min, max)) {
             productList.add(getProductDTO(product));
         }
         return productList;
     }
+
     @Override
     public List<ProductDTO> findAll() {
         List<ProductDTO> productList = new ArrayList<>();
-        for (Product product : productRepository.findAll()) {
+        for (Product product : productRepository.findByIsEnable(true)) {
             productList.add(getProductDTO(product));
         }
         return productList;
@@ -137,7 +140,7 @@ public class ProductServiceImpl implements ProductService {
 
     public List<ProductDTO> findProductsByCategoryId(Long categoryId) {
         List<ProductDTO> productList = new ArrayList<>();
-        for (Product product : productRepository.findBySubCategoryId(categoryId)) {
+        for (Product product : productRepository.findBySubCategoryIdAndIsEnable(categoryId, true)) {
             ProductDTO productDTO = new ProductDTO();
             productDTO.copyFromEntity(product);
             productList.add(productDTO);
@@ -147,7 +150,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO findProductsByCode(String code) {
-      Product product = getProductByCode(code);
+        Product product = getProductByCode(code);
         if (product == null) {
             throw new EntityNotFoundException("Product is not found for given code " + code);
         }
@@ -155,7 +158,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private Product getProductByCode(String code) {
-        return productRepository.findByCode(code);
+        return productRepository.findByCodeAndIsEnable(code, true);
     }
 
 
@@ -168,6 +171,14 @@ public class ProductServiceImpl implements ProductService {
 
         Set<String> colors = new HashSet<>();
         Set<String> sizes = new HashSet<>();
+        setColorsAndSizes(product, colors, sizes);
+
+        productDTO.setColors(colors);
+        productDTO.setSizes(sizes);
+        return productDTO;
+    }
+
+    private void setColorsAndSizes(Product product, Set<String> colors, Set<String> sizes) {
         if (product.getProductDetails() != null) {
             for (ProductDetail productDetail : product.getProductDetails()) {
                 if (productDetail.getType().equals(Type.COLOR.name())) {
@@ -178,10 +189,6 @@ public class ProductServiceImpl implements ProductService {
                 }
             }
         }
-
-        productDTO.setColors(colors);
-        productDTO.setSizes(sizes);
-        return productDTO;
     }
 
 
@@ -197,8 +204,8 @@ public class ProductServiceImpl implements ProductService {
 
 
     private Product getProduct(Long id) {
-        Product product = productRepository.findById(
-                id).orElse(null);
+        Product product = productRepository.findByIdAndIsEnable(
+                id, true);
         if (product == null) {
             throw new EntityNotFoundException(
                     "product not found for given id " + id);
