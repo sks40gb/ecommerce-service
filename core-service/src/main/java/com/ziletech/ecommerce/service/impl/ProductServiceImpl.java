@@ -119,6 +119,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDTO> search(String name, Integer min, Integer max) {
+        List<ProductDTO> productList = new ArrayList<>();
+        for (Product product : productRepository.search(name,min,max)) {
+            productList.add(getProductDTO(product));
+        }
+        return productList;
+    }
+    @Override
     public List<ProductDTO> findAll() {
         List<ProductDTO> productList = new ArrayList<>();
         for (Product product : productRepository.findAll()) {
