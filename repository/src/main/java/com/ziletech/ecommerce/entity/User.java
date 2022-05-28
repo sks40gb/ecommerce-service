@@ -38,5 +38,8 @@ public class User {
     )
     private List<Role> roles;
 
+    @OneToOne
+    @JoinColumn(name = "cart_id")
+    private Cart cartId;
 
 }

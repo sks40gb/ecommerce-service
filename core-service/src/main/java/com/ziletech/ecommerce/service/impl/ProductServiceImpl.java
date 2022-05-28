@@ -90,13 +90,6 @@ public class ProductServiceImpl implements ProductService {
                 throw new EntityNotFoundException("product already exist with given code " + productDTO.getCode());
             }
         }
-        //get category from  given category id
-        SubCategory subCategory = getSubCategory(
-                productDTO.getSubCategory().getId()
-        );
-        productDTO.copyToEntity(product);
-        product.setSubCategory(subCategory);
-        productRepository.save(product);
     }
 
     @Override

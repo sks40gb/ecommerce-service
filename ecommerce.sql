@@ -100,8 +100,6 @@ ALTER TABLE product ADD UNIQUE (`code`) ;
 
 -- 28 may 2022 @sujeet
 
-Create Table
-
 CREATE TABLE `user_role` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
