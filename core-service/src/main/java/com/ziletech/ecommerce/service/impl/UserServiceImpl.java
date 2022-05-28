@@ -1,11 +1,9 @@
 package com.ziletech.ecommerce.service.impl;
 
-import com.ziletech.ecommerce.entity.Address;
 import com.ziletech.ecommerce.entity.Role;
 import com.ziletech.ecommerce.entity.User;
 import com.ziletech.ecommerce.repository.UserRepository;
 import com.ziletech.ecommerce.service.UserService;
-import dto.AddressDTO;
 import dto.RoleDTO;
 import dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,19 +27,13 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setContactNumber(userDTO.getContactNumber());
-        user.setPassword(userDTO.getPassword());
-        List<Address> addresses = new ArrayList<>();
-        for (AddressDTO addressDTO : userDTO.getAddresses()) {
-            Address address = new Address();
-            address.setId(addressDTO.getId());
-            address.setApartment(addressDTO.getApartment());
-            address.setStreet(addressDTO.getStreet());
-            address.setCity(addressDTO.getCity());
-            address.setState(addressDTO.getState());
-            address.setPinCode(addressDTO.getPinCode());
-            addresses.add(address);
+        List<Role> roleList = new ArrayList<>();
+        for (RoleDTO roleDTO : userDTO.getRoles()) {
+            Role role = new Role();
+            role.setId(roleDTO.getId());
+            roleList.add(role);
         }
-        user.setAddresses(addresses);
+        user.setRoles(roleList);
         user = userRepository.save(user);
         userDTO.setId(user.getId());
         return userDTO;
@@ -58,20 +50,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDTO.getEmail());
         user.setContactNumber(userDTO.getContactNumber());
         user.setPassword(userDTO.getPassword());
-        List<Address> addresses = new ArrayList<>();
-        for (AddressDTO addressDTO : userDTO.getAddresses()) {
-            Address address = new Address();
-            address.setId(addressDTO.getId());
-            address.setApartment(addressDTO.getApartment());
-            address.setStreet(addressDTO.getStreet());
-            address.setCity(addressDTO.getCity());
-            address.setState(addressDTO.getState());
-            address.setPinCode(addressDTO.getPinCode());
-            addresses.add(address);
-        }
-        user.setAddresses(addresses);
-        userRepository.save(user);
-
+        user = userRepository.save(user);
     }
 
     @Override
@@ -84,20 +63,6 @@ public class UserServiceImpl implements UserService {
             userDTO.setLastName(user.getLastName());
             userDTO.setEmail(user.getEmail());
             userDTO.setContactNumber(user.getContactNumber());
-            userDTO.setPassword(user.getPassword());
-
-            List<AddressDTO> addressDTOList = new ArrayList<>();
-            for (Address address : user.getAddresses()) {
-                AddressDTO addressDTO = new AddressDTO();
-                addressDTO.setId(address.getId());
-                addressDTO.setApartment(address.getApartment());
-                addressDTO.setStreet(address.getStreet());
-                addressDTO.setCity(address.getCity());
-                addressDTO.setState(address.getState());
-                addressDTO.setPinCode(address.getPinCode());
-                addressDTOList.add(addressDTO);
-            }
-            userDTO.setAddresses(addressDTOList);
             userList.add(userDTO);
         }
         return userList;
@@ -115,20 +80,7 @@ public class UserServiceImpl implements UserService {
         userDTO.setLastName(user.getLastName());
         userDTO.setEmail(user.getEmail());
         userDTO.setContactNumber(user.getContactNumber());
-        userDTO.setPassword(user.getPassword());
 
-        List<AddressDTO> addressDTOList = new ArrayList<>();
-        for (Address address : user.getAddresses()) {
-            AddressDTO addressDTO = new AddressDTO();
-            addressDTO.setId(address.getId());
-            addressDTO.setApartment(address.getApartment());
-            addressDTO.setStreet(address.getStreet());
-            addressDTO.setCity(address.getCity());
-            addressDTO.setState(address.getState());
-            addressDTO.setPinCode(address.getPinCode());
-            addressDTOList.add(addressDTO);
-        }
-        userDTO.setAddresses(addressDTOList);
         return userDTO;
     }
 
@@ -144,19 +96,7 @@ public class UserServiceImpl implements UserService {
         userDTO.setLastName(user.getLastName());
         userDTO.setEmail(user.getEmail());
         userDTO.setContactNumber(user.getContactNumber());
-        userDTO.setPassword(user.getPassword());
-        List<AddressDTO> addressDTOList = new ArrayList<>();
-        for (Address address : user.getAddresses()) {
-            AddressDTO addressDTO = new AddressDTO();
-            addressDTO.setId(address.getId());
-            addressDTO.setApartment(address.getApartment());
-            addressDTO.setStreet(address.getStreet());
-            addressDTO.setCity(address.getCity());
-            addressDTO.setState(address.getState());
-            addressDTO.setPinCode(address.getPinCode());
-            addressDTOList.add(addressDTO);
-        }
-        userDTO.setAddresses(addressDTOList);
+
         return userDTO;
     }
 
