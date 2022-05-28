@@ -5,10 +5,9 @@ import com.ziletech.ecommerce.entity.Product;
 import com.ziletech.ecommerce.entity.SubCategory;
 import com.ziletech.ecommerce.repository.CategoryRepository;
 import com.ziletech.ecommerce.repository.SubCategoryRepository;
-import com.ziletech.ecommerce.service.CategoryService;
+import com.ziletech.ecommerce.repository.ProductRepository;
 import com.ziletech.ecommerce.service.SubCategoryService;
 import dto.CategoryDTO;
-import dto.ProductDTO;
 import dto.SubCategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,8 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     SubCategoryRepository subCategoryRepository;
     @Autowired
     CategoryRepository categoryRepository;
+    @Autowired
+    ProductRepository productRepository;
 
 
     @Override
@@ -48,9 +49,23 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 
     @Override
     public void delete(Long id) {
-        subCategoryRepository.delete(getSubCategory(id));
+        SubCategory subCategory = getSubCategory(id);
+        subCategory.setIsEnable(false);
+        deleteProducts(subCategory);
+        subCategoryRepository.save(subCategory);
 
     }
+
+
+    private void deleteProducts(SubCategory subCategory) {
+        List<Product> productList = new ArrayList<>();
+        for (Product product: subCategory.getProducts()){
+            product.setIsEnable(false);
+            productList.add(product);
+        }
+        productRepository.saveAll(productList);
+    }
+
 
     @Override
     public SubCategoryDTO findById(Long id) {
@@ -60,7 +75,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     @Override
     public List<SubCategoryDTO> findAll() {
         List<SubCategoryDTO> categoryList = new ArrayList<>();
-        for (SubCategory subCategory : subCategoryRepository.findAll()) {
+        for (SubCategory subCategory : subCategoryRepository.findByIsEnable(true)) {
             categoryList.add(getSubCategoryDTO(subCategory));
         }
         return categoryList;
@@ -77,15 +92,18 @@ public class SubCategoryServiceImpl implements SubCategoryService {
     }
 
     private SubCategory getSubCategory(Long id) {
-        return subCategoryRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(
-                        "sub-category not found for given id " + id)
-        );
+        SubCategory subCategory = subCategoryRepository.findByIdAndIsEnable(
+                id,true);
+        if (subCategory == null) {
+            throw new EntityNotFoundException(
+                    "sub category not found for given id " + id);
+        }
+        return subCategory;
     }
 
     private Category getCategory(Long id) {
-        Category category = categoryRepository.findById(
-                id).orElse(null);
+        Category category = categoryRepository.findByIdAndIsEnable(
+                id,true);
         if (category == null) {
             throw new EntityNotFoundException(
                     "category not found for given id " + id);

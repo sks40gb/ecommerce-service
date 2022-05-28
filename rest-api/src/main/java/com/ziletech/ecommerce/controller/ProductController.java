@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -59,19 +60,27 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ProductDTO>> findAll(){
-        return new ResponseEntity<>(productService.findAll(),HttpStatus.OK);
+    public ResponseEntity<List<ProductDTO>> findAll() {
+        return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ProductDTO>> search(@RequestParam(required = false) String name,
+                                                   @RequestParam(required = false) Integer min,
+                                                   @RequestParam(required = false) Integer max) {
+
+        return new ResponseEntity<>(productService.search(name,min,max), HttpStatus.OK);
     }
 
     @GetMapping("name/{name}")
-    public ResponseEntity<List<ProductDTO>> findByName(@PathVariable("name") String name){
-        return new ResponseEntity<>(productService.findByProductName(name),HttpStatus.OK);
+    public ResponseEntity<List<ProductDTO>> findByName(@PathVariable("name") String name) {
+        return new ResponseEntity<>(productService.findByProductName(name), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Object> getProductById(@PathVariable Long id){
+    public ResponseEntity<Object> getProductById(@PathVariable Long id) {
         try {
-            ProductDTO product= productService.findById(id);
+            ProductDTO product = productService.findById(id);
             return new ResponseEntity<>(product, HttpStatus.FOUND);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(
@@ -81,9 +90,9 @@ public class ProductController {
     }
 
     @GetMapping("subcategory/{id}")
-    public ResponseEntity<Object> findProductsBySubCategoryId(@PathVariable Long id){
+    public ResponseEntity<Object> findProductsBySubCategoryId(@PathVariable Long id) {
         try {
-            List<ProductDTO> products= productService.findProductsByCategoryId(id);
+            List<ProductDTO> products = productService.findProductsByCategoryId(id);
             return new ResponseEntity<>(products, HttpStatus.FOUND);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(
@@ -93,9 +102,9 @@ public class ProductController {
     }
 
     @GetMapping("code/{code}")
-    public ResponseEntity<Object> findProductsBySubCategoryId(@PathVariable("code") String code){
+    public ResponseEntity<Object> findProductsBySubCategoryId(@PathVariable("code") String code) {
         try {
-           ProductDTO product= productService.findProductsByCode(code);
+            ProductDTO product = productService.findProductsByCode(code);
             return new ResponseEntity<>(product, HttpStatus.FOUND);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(

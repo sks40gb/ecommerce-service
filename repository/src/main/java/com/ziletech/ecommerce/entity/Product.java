@@ -45,6 +45,9 @@ public class Product {
     @Column(name = "mrp", nullable = false)
     private Double mrp;
 
+    @Column(name="quantity",nullable = false)
+    private Integer quantity;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_category_id", nullable = false)
     private SubCategory subCategory;

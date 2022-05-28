@@ -23,6 +23,7 @@ public class ProductDTO {
     private String unitType;
     private Double unitPrice;
     private Double mrp;
+    private Integer quantity;
     private Boolean isEnable;
     private SubCategoryDTO subCategory;
     private Set<String> colors;
@@ -37,6 +38,7 @@ public class ProductDTO {
         setUnitType(product.getUnitType());
         setUnitPrice(product.getUnitPrice());
         setMrp(product.getMrp());
+        setQuantity(product.getQuantity());
         setIsEnable(product.getIsEnable());
     }
 
@@ -52,6 +54,7 @@ public class ProductDTO {
         product.setUnitPrice(getUnitPrice());
         product.setMrp(getMrp());
         product.setIsEnable(getIsEnable());
+        product.setQuantity(getQuantity());
     }
 
 

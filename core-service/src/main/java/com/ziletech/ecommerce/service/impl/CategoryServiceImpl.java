@@ -2,7 +2,10 @@ package com.ziletech.ecommerce.service.impl;
 
 import com.ziletech.ecommerce.entity.Category;
 import com.ziletech.ecommerce.entity.SubCategory;
+import com.ziletech.ecommerce.entity.Product;
 import com.ziletech.ecommerce.repository.CategoryRepository;
+import com.ziletech.ecommerce.repository.SubCategoryRepository;
+import com.ziletech.ecommerce.repository.ProductRepository;
 import com.ziletech.ecommerce.service.CategoryService;
 import dto.CategoryDTO;
 import dto.SubCategoryDTO;
@@ -18,6 +21,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     CategoryRepository categoryRepository;
+    @Autowired
+    SubCategoryRepository subCategoryRepository;
+    @Autowired
+    ProductRepository productRepository;
 
     @Override
     public CategoryDTO save(CategoryDTO categoryDTO) {
@@ -37,8 +44,30 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(Long id) {
-        categoryRepository.delete(getCategory(id));
+        Category category = getCategory(id);
+        deleteSubCategories(category);
+        category.setIsEnable(false);
+        categoryRepository.save(category);
 
+    }
+
+    private void deleteSubCategories(Category category) {
+        List<SubCategory> subCategoryList = new ArrayList<>();
+        for (SubCategory subCategory: category.getSubCategoryList()){
+            subCategory.setIsEnable(false);
+            subCategoryList.add(subCategory);
+            deleteProducts(subCategory);
+        }
+        subCategoryRepository.saveAll(subCategoryList);
+    }
+
+    private void deleteProducts(SubCategory subCategory) {
+        List<Product> productList = new ArrayList<>();
+        for (Product product: subCategory.getProducts()){
+            product.setIsEnable(false);
+            productList.add(product);
+        }
+        productRepository.saveAll(productList);
     }
 
     @Override
@@ -49,7 +78,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryDTO> findAll() {
         List<CategoryDTO> categoryList = new ArrayList<>();
-        for(Category category:categoryRepository.findAll()){
+        for(Category category:categoryRepository.findByIsEnable(true)){
             categoryList.add(getCategoryDTO(category));
         }
         return categoryList;
@@ -70,8 +99,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private Category getCategory(Long id) {
-        Category category = categoryRepository.findById(
-                id).orElse(null);
+        Category category = categoryRepository.findByIdAndIsEnable(
+                id,true);
         if (category == null) {
             throw new EntityNotFoundException(
                     "category not found for given id " + id);
