@@ -1,6 +1,5 @@
 package com.ziletech.ecommerce.service;
 
-import dto.CategoryDTO;
 import dto.ProductDTO;
 
 import java.util.List;
@@ -17,6 +16,8 @@ public interface ProductService {
     List<ProductDTO> findByProductName(String name);
 
     List<ProductDTO> findAll();
+
+    List<ProductDTO> search(String name, Integer min, Integer max);
 
     List<ProductDTO> findProductsByCategoryId(Long id);
 

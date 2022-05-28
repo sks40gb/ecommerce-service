@@ -111,3 +111,7 @@ CREATE TABLE `user_role` (
   CONSTRAINT `FK__user_role__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
+--28 May 2022 @Nagendra
+ALTER TABLE `product`     ADD COLUMN `quantity` INT(11) NOT NULL AFTER `unit_price`;
+
+
