@@ -27,6 +27,7 @@ public class User {
     private String contactNumber;
     private String password;
 
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Address> addresses;
 
@@ -37,6 +38,5 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private List<Role> roles;
-
 
 }

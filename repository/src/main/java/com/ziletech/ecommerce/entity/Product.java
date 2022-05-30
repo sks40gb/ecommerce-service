@@ -45,7 +45,7 @@ public class Product {
     @Column(name = "mrp", nullable = false)
     private Double mrp;
 
-    @Column(name="quantity",nullable = false)
+    @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
