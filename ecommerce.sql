@@ -114,4 +114,48 @@ CREATE TABLE `user_role` (
 --28 May 2022 @Nagendra
 ALTER TABLE `product`     ADD COLUMN `quantity` INT(11) NOT NULL AFTER `unit_price`;
 
+-- 30 May 2022 @Sujeet
+
+CREATE TABLE `cart` (
+  `user_id` int NOT NULL,
+  `create_date` date NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cart_id_unique` (`id`),
+  UNIQUE KEY `user_id_unique` (`user_id`),
+  CONSTRAINT `FK__cart__user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `cart_item` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cart_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  `quantity` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK__cart__cart_item` (`cart_id`),
+  KEY `FK__cart_item__product` (`product_id`),
+  CONSTRAINT `FK__cart__cart_item` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`id`),
+  CONSTRAINT `FK__cart_item__product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE `order` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `created_date` timestamp NOT NULL,
+  `user_id` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `order_items` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `quantity` int NOT NULL,
+  `price` float NOT NULL,
+  `order_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK__order_items__order` (`order_id`),
+  CONSTRAINT `FK__order_items__order` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 

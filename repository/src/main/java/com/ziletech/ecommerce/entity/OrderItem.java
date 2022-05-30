@@ -1,34 +1,35 @@
 package com.ziletech.ecommerce.entity;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
-@Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "cart_item")
-public class CartItem {
+@Entity
+@Table(name = "order_items")
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "cart_id")
-    private Cart cart;
+    @Column(name = "quantity")
+    private int quantity;
+
+    @Column(name = "price")
+    private double price;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    private Order order;
+
+    @OneToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
-
-    private Integer quantity;
-
-
-
 }
