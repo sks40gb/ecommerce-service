@@ -20,19 +20,18 @@ import java.util.List;
 public class SubCategoryServiceImpl implements SubCategoryService {
 
     @Autowired
-    SubCategoryRepository subCategoryRepository;
+    private SubCategoryRepository subCategoryRepository;
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
     @Autowired
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
 
 
     @Override
     public SubCategoryDTO save(SubCategoryDTO subCategoryDTO) {
         SubCategory subCategory = new SubCategory();
         subCategoryDTO.copyToEntity(subCategory);
-        subCategory.setCategory(getCategory(
-                subCategoryDTO.getCategory().getId()));
+        subCategory.setCategory(getCategory(subCategoryDTO.getCategory().getId()));
         subCategoryRepository.save(subCategory);
         return getSubCategoryDTO(subCategory);
     }
@@ -59,7 +58,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 
     private void deleteProducts(SubCategory subCategory) {
         List<Product> productList = new ArrayList<>();
-        for (Product product: subCategory.getProducts()){
+        for (Product product : subCategory.getProducts()) {
             product.setIsEnable(false);
             productList.add(product);
         }
@@ -93,7 +92,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 
     private SubCategory getSubCategory(Long id) {
         SubCategory subCategory = subCategoryRepository.findByIdAndIsEnable(
-                id,true);
+                id, true);
         if (subCategory == null) {
             throw new EntityNotFoundException(
                     "sub category not found for given id " + id);
@@ -103,7 +102,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 
     private Category getCategory(Long id) {
         Category category = categoryRepository.findByIdAndIsEnable(
-                id,true);
+                id, true);
         if (category == null) {
             throw new EntityNotFoundException(
                     "category not found for given id " + id);

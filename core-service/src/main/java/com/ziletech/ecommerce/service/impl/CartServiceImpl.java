@@ -19,13 +19,13 @@ import java.util.Date;
 public class CartServiceImpl implements CartService {
 
     @Autowired
-    CartRepository cartRepository;
+    private CartRepository cartRepository;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
     @Autowired
-    CartItemRepository cartItemRepository;
+    private CartItemRepository cartItemRepository;
 
     @Override
     public void create(Long userId, Long productId, Integer quantity) {
@@ -35,10 +35,10 @@ public class CartServiceImpl implements CartService {
         Product product = getProduct(productId);
 
         if (cart != null) {
-            if (!isProductAvailableInCart(cart,product,quantity)){
+            if (!isProductAvailableInCart(cart, product, quantity)) {
                 createCartItem(quantity, cart, product);
             }
-        }else {
+        } else {
             Cart newCart = new Cart();
             newCart.setUser(user);
             newCart.setCreateDate(new Date());
@@ -64,6 +64,7 @@ public class CartServiceImpl implements CartService {
         }
         return user;
     }
+
     private Product getProduct(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product == null) {

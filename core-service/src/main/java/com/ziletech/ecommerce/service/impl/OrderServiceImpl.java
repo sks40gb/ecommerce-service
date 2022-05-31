@@ -16,19 +16,19 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
-    OrderRepository orderRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
-    OrderItemRepository orderItemRepository;
+    private OrderItemRepository orderItemRepository;
 
     @Autowired
-    CartItemRepository cartItemRepository;
+    private CartItemRepository cartItemRepository;
 
     @Autowired
-    CartRepository cartRepository;
+    private CartRepository cartRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Override
     public void placeOrder(Long userId) {
@@ -42,8 +42,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void createOrderItem(User user, Order order) {
-       Cart cart = cartRepository.findByUserId(user.getId());
-        if (cart.getCartItems()!=null) {
+        Cart cart = cartRepository.findByUserId(user.getId());
+        if (cart.getCartItems() != null) {
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             List<OrderItem> items = new ArrayList<>();
