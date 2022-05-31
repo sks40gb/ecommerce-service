@@ -16,7 +16,7 @@ import java.util.List;
 public class CategoryController {
 
     @Autowired
-    CategoryService categoryService;
+    private CategoryService categoryService;
 
     @PostMapping("")
     public ResponseEntity<CategoryDTO> create(@RequestBody CategoryDTO categoryDTO) {
@@ -27,17 +27,13 @@ public class CategoryController {
 
     @PutMapping("{id}")
     public ResponseEntity<MessageDTO> update(@PathVariable("id") Long id,
-                                         @RequestBody CategoryDTO categoryDTO) {
+                                             @RequestBody CategoryDTO categoryDTO) {
         categoryDTO.setId(id);
         try {
             categoryService.update(categoryDTO);
-            return new ResponseEntity<>(
-                    new MessageDTO("category is updated"), HttpStatus.OK
-            );
+            return new ResponseEntity<>(new MessageDTO("category is updated"), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(
-                    new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND
-            );
+            return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -45,30 +41,24 @@ public class CategoryController {
     public ResponseEntity<MessageDTO> delete(@PathVariable("id") Long id) {
         try {
             categoryService.delete(id);
-            return new ResponseEntity<>(
-                    new MessageDTO("category is deleted"), HttpStatus.OK
-            );
+            return new ResponseEntity<>(new MessageDTO("category is deleted"), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(
-                    new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND
-            );
+            return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<CategoryDTO>> findAll(){
-        return new ResponseEntity<>(categoryService.findAll(),HttpStatus.OK);
+    public ResponseEntity<List<CategoryDTO>> findAll() {
+        return new ResponseEntity<>(categoryService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Object> getCategoryById(@PathVariable Long id){
+    public ResponseEntity<Object> getCategoryById(@PathVariable Long id) {
         try {
-           CategoryDTO category= categoryService.findById(id);
+            CategoryDTO category = categoryService.findById(id);
             return new ResponseEntity<>(category, HttpStatus.FOUND);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(
-                    new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND
-            );
+            return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 

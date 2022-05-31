@@ -1,6 +1,7 @@
 package com.ziletech.ecommerce.controller;
 
 import com.ziletech.ecommerce.service.ProductService;
+import com.ziletech.ecommerce.service.userexception.ProductAlreadyExistException;
 import dto.MessageDTO;
 import dto.ProductDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,14 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
-    ProductService productService;
+    private ProductService productService;
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody ProductDTO productDTO) {
         try {
             ProductDTO product = productService.save(productDTO);
             return new ResponseEntity<>(product, HttpStatus.CREATED);
-        } catch (EntityNotFoundException e) {
+        } catch (ProductAlreadyExistException | EntityNotFoundException e) {
             return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
@@ -35,13 +36,9 @@ public class ProductController {
         productDTO.setId(id);
         try {
             productService.update(productDTO);
-            return new ResponseEntity<>(
-                    new MessageDTO("product is updated"), HttpStatus.OK
-            );
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(
-                    new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND
-            );
+            return new ResponseEntity<>(new MessageDTO("product is updated"), HttpStatus.OK);
+        } catch (ProductAlreadyExistException | EntityNotFoundException e) {
+            return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -69,7 +66,7 @@ public class ProductController {
                                                    @RequestParam(required = false) Integer min,
                                                    @RequestParam(required = false) Integer max) {
 
-        return new ResponseEntity<>(productService.search(name,min,max), HttpStatus.OK);
+        return new ResponseEntity<>(productService.search(name, min, max), HttpStatus.OK);
     }
 
     @GetMapping("name/{name}")

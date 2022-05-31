@@ -20,11 +20,11 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
     @Autowired
-    SubCategoryRepository subCategoryRepository;
+    private SubCategoryRepository subCategoryRepository;
     @Autowired
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
 
     @Override
     public CategoryDTO save(CategoryDTO categoryDTO) {
@@ -53,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private void deleteSubCategories(Category category) {
         List<SubCategory> subCategoryList = new ArrayList<>();
-        for (SubCategory subCategory: category.getSubCategoryList()){
+        for (SubCategory subCategory : category.getSubCategoryList()) {
             subCategory.setIsEnable(false);
             subCategoryList.add(subCategory);
             deleteProducts(subCategory);
@@ -63,7 +63,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private void deleteProducts(SubCategory subCategory) {
         List<Product> productList = new ArrayList<>();
-        for (Product product: subCategory.getProducts()){
+        for (Product product : subCategory.getProducts()) {
             product.setIsEnable(false);
             productList.add(product);
         }
@@ -78,18 +78,18 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryDTO> findAll() {
         List<CategoryDTO> categoryList = new ArrayList<>();
-        for(Category category:categoryRepository.findByIsEnable(true)){
+        for (Category category : categoryRepository.findByIsEnable(true)) {
             categoryList.add(getCategoryDTO(category));
         }
         return categoryList;
     }
 
 
-    private CategoryDTO getCategoryDTO(Category category){
+    private CategoryDTO getCategoryDTO(Category category) {
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.copyFromEntity(category);
         List<SubCategoryDTO> subCategoryList = new ArrayList<>();
-        for(SubCategory subCategory:category.getSubCategoryList()){
+        for (SubCategory subCategory : category.getSubCategoryList()) {
             SubCategoryDTO subCategoryDTO = new SubCategoryDTO();
             subCategoryDTO.copyFromEntity(subCategory);
             subCategoryList.add(subCategoryDTO);
@@ -100,7 +100,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private Category getCategory(Long id) {
         Category category = categoryRepository.findByIdAndIsEnable(
-                id,true);
+                id, true);
         if (category == null) {
             throw new EntityNotFoundException(
                     "category not found for given id " + id);

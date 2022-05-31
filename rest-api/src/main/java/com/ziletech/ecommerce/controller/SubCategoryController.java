@@ -16,7 +16,7 @@ import java.util.List;
 public class SubCategoryController {
 
     @Autowired
-    SubCategoryService subCategoryService;
+    private SubCategoryService subCategoryService;
 
     @PostMapping("")
     public ResponseEntity<Object> create(@RequestBody SubCategoryDTO subCategoryDTO) {
@@ -35,13 +35,9 @@ public class SubCategoryController {
         subCategoryDTO.setId(id);
         try {
             subCategoryService.update(subCategoryDTO);
-            return new ResponseEntity<>(
-                    new MessageDTO("sub-category is updated"), HttpStatus.OK
-            );
+            return new ResponseEntity<>(new MessageDTO("sub-category is updated"), HttpStatus.OK);
         } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(
-                    new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND
-            );
+            return new ResponseEntity<>(new MessageDTO(e.getMessage()), HttpStatus.NOT_FOUND);
         }
     }
 

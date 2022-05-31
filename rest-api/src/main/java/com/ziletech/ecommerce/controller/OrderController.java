@@ -17,7 +17,7 @@ import javax.persistence.EntityNotFoundException;
 public class OrderController {
 
     @Autowired
-    OrderService orderService;
+    private OrderService orderService;
 
     @GetMapping("/place/{userId}")
     public ResponseEntity<Object> createOrder(@PathVariable("userId") Long userId) {

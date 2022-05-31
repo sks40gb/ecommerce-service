@@ -7,6 +7,7 @@ import com.ziletech.ecommerce.repository.ProductDetailRepository;
 import com.ziletech.ecommerce.repository.ProductRepository;
 import com.ziletech.ecommerce.repository.SubCategoryRepository;
 import com.ziletech.ecommerce.service.ProductService;
+import com.ziletech.ecommerce.service.userexception.ProductAlreadyExistException;
 import dto.ProductDTO;
 import dto.SubCategoryDTO;
 import dto.Type;
@@ -20,26 +21,21 @@ import java.util.*;
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
 
     @Autowired
-    SubCategoryRepository subCategoryRepository;
+    private SubCategoryRepository subCategoryRepository;
 
     @Autowired
-    ProductDetailRepository productDetailRepository;
+    private ProductDetailRepository productDetailRepository;
 
     @Override
     public ProductDTO save(ProductDTO productDTO) {
         Product product = new Product();
         //check product code if already exist
-        Product existingProduct = getProductByCode(productDTO.getCode());
-        if (existingProduct != null) {
-            throw new EntityNotFoundException("product already exist with given code " + productDTO.getCode());
-        }
+        checkIfProductIsAlreadyAvailable(productDTO);
         //get category from  given category id
-        SubCategory subCategory = getSubCategory(
-                productDTO.getSubCategory().getId()
-        );
+        SubCategory subCategory = getSubCategory(productDTO.getSubCategory().getId());
         productDTO.copyToEntity(product);
         product.setSubCategory(subCategory);
         productRepository.saveAndFlush(product);
@@ -48,21 +44,36 @@ public class ProductServiceImpl implements ProductService {
         return getProductDTO(product);
     }
 
+    private void checkIfProductIsAlreadyAvailable(ProductDTO productDTO) {
+        Product existingProduct = getProductByCode(productDTO.getCode());
+        if (existingProduct != null) {
+            throw new ProductAlreadyExistException("product already exist with given code " + productDTO.getCode());
+        }
+    }
+
     private void saveProductDetails(ProductDTO productDTO, Product product) {
         List<ProductDetail> productDetailSet = new LinkedList<>();
-        if (productDTO.getSizes() != null && productDTO.getSizes().size() > 0) {
-            setProductDetailsList(product, Type.SIZE.name(),
-                    productDTO.getSizes(),
-                    productDetailSet);
+        addSizes(productDTO, product, productDetailSet);
+        addColors(productDTO, product, productDetailSet);
+        if (productDetailSet.size() > 0) {
+            productDetailRepository.saveAllAndFlush(productDetailSet);
+            product.setProductDetails(productDetailSet);
         }
+    }
+
+    private void addColors(ProductDTO productDTO, Product product, List<ProductDetail> productDetailSet) {
         if (productDTO.getColors() != null && productDTO.getColors().size() > 0) {
             setProductDetailsList(product, Type.COLOR.name(),
                     productDTO.getColors(),
                     productDetailSet);
         }
-        if (productDetailSet.size() > 0) {
-            productDetailRepository.saveAllAndFlush(productDetailSet);
-            product.setProductDetails(productDetailSet);
+    }
+
+    private void addSizes(ProductDTO productDTO, Product product, List<ProductDetail> productDetailSet) {
+        if (productDTO.getSizes() != null && productDTO.getSizes().size() > 0) {
+            setProductDetailsList(product, Type.SIZE.name(),
+                    productDTO.getSizes(),
+                    productDetailSet);
         }
     }
 
@@ -87,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
         if (!productDTO.getCode().equals(product.getCode())) {
             Product existingProduct = getProductByCode(productDTO.getCode());
             if (existingProduct != null) {
-                throw new EntityNotFoundException("product already exist with given code " + productDTO.getCode());
+                throw new ProductAlreadyExistException("product already exist with given code " + productDTO.getCode());
             }
         }
     }

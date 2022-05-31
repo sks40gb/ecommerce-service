@@ -19,10 +19,10 @@ import java.util.List;
 public class RegistrationServiceImpl implements RegistrationService {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    RoleRepository roleRepository;
+    private RoleRepository roleRepository;
 
     @Override
     public void register(UserDTO userDTO) {
@@ -49,7 +49,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     private void checkIfEmailIsExist(String email) {
         User user = userRepository.findByEmail(email);
-        if(user!=null){
+        if (user != null) {
             throw new EmailAlreadyExistException("email is already exist");
         }
     }
